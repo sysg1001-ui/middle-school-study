@@ -8,7 +8,7 @@ const source = new URL('dist/', root);
 const output = new URL('build/', root);
 const assets = [
   'style.css', 'midterm.js', 'study-notes.js', 'practice-sets.js', 'materials.js',
-  'app.js', 'update.js', 'icon-180.png', 'icon-192.png', 'icon-512.png'
+  'app.js', 'update.js', 'study-icon-32.png', 'study-icon-180.png', 'study-icon-192.png', 'study-icon-512.png'
 ];
 const inputFiles = ['index.html', 'sw.js', '_headers', ...assets];
 const inputs = new Map(await Promise.all(inputFiles.map(async name => [name, await readFile(new URL(name, source))])));
@@ -46,10 +46,10 @@ const manifest = JSON.stringify({
   start_url: './',
   scope: './',
   display: 'standalone',
-  background_color: '#f7f7fd',
-  theme_color: '#f7f7fd',
+  background_color: '#fff5f9',
+  theme_color: '#fff5f9',
   icons: [192, 512].map((size) => ({
-    src: `${assetPath}icon-${size}.png`, sizes: `${size}x${size}`, type: 'image/png'
+    src: `${assetPath}study-icon-${size}.png`, sizes: `${size}x${size}`, type: 'image/png'
   }))
 });
 // Static hosts can redirect .html asset paths to extensionless navigation URLs.
