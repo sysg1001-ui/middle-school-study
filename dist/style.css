@@ -64,7 +64,15 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .study-notes > .card > h3 { font-size: clamp(19px, 4vw, 24px); }
 .note-section { margin-top: 19px; }
 .note-section h4 { margin: 0 0 7px; color: var(--accent); }
-.note-section:first-of-type { background: #f4f1ff; padding: 12px 14px 4px; border-radius: 12px; }
+.note-section:first-of-type, .note-readings + .note-section { background: #f4f1ff; padding: 12px 14px 4px; border-radius: 12px; }
+.note-readings { margin-top: 19px; }
+.note-readings h4 { color: var(--accent); }
+.note-reading { margin-top: 10px; padding: 13px 15px; background: #fafaff; border: 1px solid var(--line); border-radius: 10px; }
+.note-reading h5 { margin: 3px 0 8px; font-size: 16px; line-height: 1.5; }
+.note-reading .note-reading-source { color: var(--muted); font-size: 12px; }
+.note-reading p + p { margin-top: 7px; }
+.reading-evidence { text-decoration: underline 2px var(--accent); text-underline-offset: .24em; }
+.note-reading .reading-reason { margin-top: 11px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
 .note-list { margin: 0; }
 .note-row { display: grid; grid-template-columns: minmax(110px, 10.5rem) minmax(0, 1fr); gap: 5px 15px; padding: 8px 0; line-height: 1.55; }
 .note-row + .note-row { border-top: 1px solid var(--line); }

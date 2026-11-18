@@ -23,6 +23,14 @@ class Element {
   setAttribute() {}
   removeAttribute() {}
   addEventListener(name, listener) { this.events[name] = listener; }
+  showModal() { this.open = true; }
+  cloneNode(deep) {
+    const copy = new Element(this.tag);
+    copy.className = this.className;
+    copy.textContent = this.textContent;
+    if (deep) copy.append(...this.children.map(child => child instanceof Element ? child.cloneNode(true) : child));
+    return copy;
+  }
   closest() { return this; }
   focus() {}
   querySelector(selector) {
@@ -80,6 +88,18 @@ function openPage(session, local, options = {}) {
       form.events.submit({ preventDefault() {} });
     },
     next() { content.querySelector('.practice-controls button').events.click(); },
+    print() {
+      const button = [...content.walk()].find(node => node.textContent === '시험지 출력');
+      button.events.click();
+      return document.querySelector('#exam-print-output');
+    },
+    notes(subject) {
+      const option = [...document.querySelector('#subjects').walk()].find(node => node.textContent === subject);
+      option.events.click();
+      location.hash = '#notes';
+      window.events.hashchange();
+      return content;
+    },
     review() {
       location.hash = '#review';
       window.events.hashchange();
@@ -87,20 +107,35 @@ function openPage(session, local, options = {}) {
   };
 }
 
-test('three distinct sets per subject and stable IDs for the original and added questions', () => {
+test('two disjoint 16-question sets per subject retain all earlier question IDs', () => {
   const page = openPage(new Map(), new Map());
-  const subjects = Object.values(runInContext('exams[0].subjects', page.context));
-  for (const data of subjects) {
+  const subjects = Object.entries(runInContext('exams[0].subjects', page.context));
+  const earlierSets = runInContext('midtermPracticeSets', page.context);
+  for (const [subject, data] of subjects) {
     assert.equal(data.practiceSets.length, 2);
-    const sets = [data.questions, ...data.practiceSets];
-    assert(sets.every((questions) => questions.length === 8));
-    assert.equal(new Set(sets.flat().map((question) => question.id)).size, 24);
-    assert.equal(new Set(sets.flat().map(({ prompt, passage }) => JSON.stringify([prompt, passage]))).size, 24);
+    const sets = data.practiceSets;
+    assert(sets.every((questions) => questions.length === 16));
+    const ids = new Set(sets.flat().map(question => question.id));
+    assert.equal(ids.size, 32);
+    assert([data.questions, ...earlierSets[subject]].flat().every(question => ids.has(question.id)));
+    assert.equal(new Set(sets.flat().map(({ prompt, passage }) => JSON.stringify([prompt, passage]))).size, 32);
     for (const question of sets.flat()) {
       assert.equal(new Set(question.choices).size, 4);
       assert(question.choices[question.answer] && question.explanation);
     }
   }
+});
+
+test('print uses the full current set and Korean notes expose underlined evidence', () => {
+  const page = openPage(new Map(), new Map());
+  const paper = page.print();
+  const prompts = [...paper.walk()].filter(node => node.className === 'exam-paper-prompt');
+  assert.deepEqual(prompts.map((node, index) => `${index + 1}. ${node.textContent}`), page.questions());
+  assert.equal(prompts.length, 16);
+  const notes = page.notes('국어');
+  const evidence = [...notes.walk()].filter(node => node.className === 'reading-evidence');
+  assert.equal(evidence.length, 10);
+  assert(evidence.every(node => node.textContent));
 });
 
 test('refresh and manual rotation offer different questions while old wrong answers remain reviewable', () => {
@@ -116,12 +151,12 @@ test('refresh and manual rotation offer different questions while old wrong answ
   assert.equal(first.window.studyUpdateBlockReason(), '');
   const second = openPage(session, records);
   const other = second.questions();
-  assert(other.length === 8 && other.every((prompt) => !original.includes(prompt)));
-  second.selectAnswer(0);
+  assert(other.length === 16 && other.every((prompt) => !original.includes(prompt)));
+  second.selectAnswer(1);
   second.grade();
   second.next();
   const third = second.questions();
-  assert(third.length === 8 && third.every((prompt) => !other.includes(prompt)));
+  assert.deepEqual(third, original);
   second.review();
   assert.equal(second.questions().length, 2);
   assert(second.questions().includes(original[0]));
