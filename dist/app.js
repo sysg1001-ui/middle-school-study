@@ -5,13 +5,13 @@ const title = document.querySelector('#section-title');
 const menu = [...document.querySelectorAll('[data-view]')];
 const viewLabels = { summary: '시험 범위', notes: '요약정리', practice: '문제 풀기', review: '오답 노트', textbooks: '교과서 목록' };
 const storageKey = 'middle-school-study-v1';
-const roundKey = 'middle-school-study:practice-round';
+const practiceSize = 16;
+const practiceOffsets = new Map();
 let view = 'summary';
 let exam = exams[0];
 let subject = Object.keys(exam.subjects)[0];
 let progress = {};
 let unsavedProgress = {};
-let practiceRound;
 
 function element(tag, label, className) {
   const node = document.createElement(tag);
@@ -68,43 +68,50 @@ function questionKey(subjectName, question) {
   return JSON.stringify([exam.id, subjectName, question.id]);
 }
 
-function questionSets(data) {
-  return data.practiceSets ?? [data.questions];
-}
-
-function setPracticeRound(round) {
-  practiceRound = round;
+function advancePractice(data, key) {
+  let previous = practiceOffsets.get(key);
+  if (previous === undefined) {
+    try {
+      previous = sessionStorage.getItem(key);
+    } catch {
+      // Some browsers block access to sessionStorage.
+    }
+    previous ??= history?.state?.[key];
+  }
+  const bankSize = data.practiceBank.length;
+  const offset = Number.parseInt(previous, 10);
+  // Moving 17 places through the 40-question bank gives disjoint consecutive windows.
+  const next = Number.isInteger(offset) && offset >= 0
+    ? (offset + practiceSize + 1) % bankSize
+    : Math.floor(Math.random() * bankSize);
+  practiceOffsets.set(key, next);
   try {
-    sessionStorage.setItem(roundKey, String(round));
+    sessionStorage.setItem(key, String(next));
   } catch {
     try {
-      history.replaceState({ ...history.state, [roundKey]: round }, '');
+      history.replaceState({ ...history.state, [key]: next }, '');
     } catch {
       // The current screen can still switch sets when neither storage option is available.
     }
   }
+  return next;
+}
+
+function practiceKey() {
+  return `middle-school-study:practice-offset:${exam.id}:${subject}`;
 }
 
 function practiceQuestions(data) {
-  const sets = questionSets(data);
-  if (sets.length === 1) return sets[0];
-  if (practiceRound === undefined) {
-    let previous;
-    try {
-      previous = sessionStorage.getItem(roundKey);
-    } catch {
-      previous = history.state?.[roundKey];
-    }
-    const previousRound = Number.parseInt(previous, 10);
-    setPracticeRound(Number.isInteger(previousRound) && previousRound >= 0
-      ? (previousRound + 1) % sets.length
-      : previous === undefined ? Math.floor(Math.random() * sets.length) : 0);
-  }
-  return sets[practiceRound % sets.length];
+  const bank = data.practiceBank;
+  if (!bank) return data.questions;
+  const key = practiceKey();
+  const offset = practiceOffsets.get(key) ?? advancePractice(data, key);
+  return Array.from({ length: practiceSize }, (_, index) => bank[(offset + index) % bank.length]);
 }
 
 function wrongQuestions(subjectName) {
-  return questionSets(exam.subjects[subjectName]).flat()
+  const data = exam.subjects[subjectName];
+  return (data.practiceBank ?? data.questions)
     .filter(question => progress[questionKey(subjectName, question)] === 'wrong');
 }
 
@@ -130,7 +137,7 @@ function showScope(data) {
   }
   content.append(grid);
   if (data.notes) addStudyLink(`${subject} 요약정리 보기`, '#notes');
-  else if (data.questions.length) addStudyLink(`${subject} 문제 ${questionSets(data)[0].length}개 풀기`, '#practice');
+  else if (data.questions.length) addStudyLink(`${subject} 문제 ${data.practiceBank ? practiceSize : data.questions.length}개 풀기`, '#practice');
 }
 
 function addStudyLink(label, href) {
@@ -200,7 +207,7 @@ function showNotes(data) {
     }
     content.append(references);
   }
-  if (data.questions.length) addStudyLink(`${subject} 문제 ${questionSets(data)[0].length}개 풀기`, '#practice');
+  if (data.questions.length) addStudyLink(`${subject} 문제 ${data.practiceBank ? practiceSize : data.questions.length}개 풀기`, '#practice');
 }
 
 function showQuestions(questions) {
@@ -295,7 +302,7 @@ function showPracticeControls(data, questions) {
   print.addEventListener('click', () => showPrintPreview(questions));
   content.append(controls);
 
-  if (!data.practiceSets?.length) {
+  if (!data.practiceBank) {
     controls.append(print);
     return;
   }
@@ -310,7 +317,7 @@ function showPracticeControls(data, questions) {
       message.textContent = blocker;
       return;
     }
-    setPracticeRound((practiceRound + 1) % questionSets(data).length);
+    advancePractice(data, practiceKey());
     renderContent();
     content.querySelector('.practice-controls button').focus();
   });
