@@ -94,5 +94,19 @@
       <ol>{{RELEASES}}</ol>
     </details>
   </footer>
+  <dialog id="exam-print-preview" aria-labelledby="exam-print-title">
+    <div class="exam-preview-toolbar">
+      <div>
+        <h2 id="exam-print-title">시험지 미리보기</h2>
+        <p>A4 세로 · 페이지 나눔은 인쇄 창에서 확인하세요.</p>
+      </div>
+      <form method="dialog">
+        <button type="submit">닫기</button>
+        <button id="exam-print-confirm" type="button" class="primary">인쇄</button>
+      </form>
+    </div>
+    <div id="exam-preview-paper"></div>
+  </dialog>
+  <div id="exam-print-output" aria-hidden="true"></div>
 </body>
 </html>

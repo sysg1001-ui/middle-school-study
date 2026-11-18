@@ -90,6 +90,83 @@ input[type=radio] { accent-color: var(--accent); }
 .practice-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; margin: 0 0 13px; }
 .practice-controls button { font-weight: 700; }
 .practice-controls p { margin: 0; font-size: 13px; }
+#exam-print-output { display: none; }
+#exam-print-preview {
+  width: min(860px, calc(100% - 20px));
+  max-height: calc(100% - 24px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #edecf3;
+  color: inherit;
+}
+#exam-print-preview::backdrop { background: rgb(24 20 45 / .66); }
+.exam-preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px clamp(12px, 3vw, 20px);
+  background: white;
+  border-bottom: 1px solid var(--line);
+}
+.exam-preview-toolbar h2 { margin: 0; font-size: 20px; }
+.exam-preview-toolbar p { margin: 3px 0 0; font-size: 13px; color: var(--muted); }
+.exam-preview-toolbar form { display: flex; gap: 8px; margin: 0; }
+.exam-preview-toolbar button { min-height: 44px; font-weight: 700; }
+#exam-preview-paper { padding: clamp(8px, 2vw, 16px); }
+.exam-paper {
+  max-width: 210mm;
+  margin: 0 auto;
+  padding: clamp(13px, 4vw, 45px);
+  background: white;
+  color: #111;
+  overflow-wrap: anywhere;
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.exam-paper-header { padding-block: 8px; border-block: 3px double #111; text-align: center; }
+.exam-paper-header p { margin: 0; }
+.exam-paper-header h3 { margin: 2px 0 8px; font-size: 1.75em; line-height: 1.25; }
+.exam-student { border-top: 1px solid #555; padding-top: 7px; }
+.exam-instructions { margin: 10px 0 16px; }
+.exam-paper-items { margin: 0; padding: 0; list-style: none; counter-reset: exam-question; }
+.exam-paper-question {
+  position: relative;
+  padding: 0 0 1em 2em;
+  counter-increment: exam-question;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.exam-paper-question::before { position: absolute; left: 0; content: counter(exam-question) "."; font-weight: 700; }
+.exam-paper-prompt { margin: 0 0 5px; font-weight: 700; }
+.exam-paper-passage { padding: 6px 8px; margin: 6px 0; border: 1px solid #555; white-space: pre-wrap; }
+.exam-paper-choices { margin: 0; padding: 0; list-style: none; counter-reset: exam-choice; }
+.exam-paper-choices li { position: relative; padding-inline-start: 1.55em; counter-increment: exam-choice; }
+@counter-style exam-circled {
+  system: fixed;
+  symbols: '①' '②' '③' '④' '⑤';
+  fallback: decimal;
+}
+.exam-paper-choices li::before { position: absolute; left: 0; content: counter(exam-choice, exam-circled); }
+@media screen and (min-width: 680px) {
+  .exam-paper-items { columns: 2; column-gap: 36px; column-rule: 1px solid #777; }
+}
+@page { size: A4 portrait; margin: 13mm; }
+@media print {
+  :root, body { background: white; padding: 0; }
+  body:has(#exam-print-preview[open]) > :not(#exam-print-output) { display: none !important; }
+  body:has(#exam-print-preview[open]) #exam-print-preview::backdrop { display: none; }
+  body:has(#exam-print-preview[open]) #exam-print-output { display: block; }
+  #exam-print-output .exam-paper { max-width: none; margin: 0; padding: 0; font-size: 10.5pt; }
+  #exam-print-output .exam-paper-items { columns: 2; column-gap: 10mm; column-rule: 1px solid #777; }
+}
 .textbook-card { padding: 14px 18px 6px; }
 .textbooks { width: 100%; border-collapse: collapse; text-align: left; }
 .textbooks caption { padding: 4px 0 13px; color: var(--muted); font-size: 14px; text-align: left; }
