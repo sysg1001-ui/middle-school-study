@@ -240,14 +240,50 @@ function showQuestions(questions) {
   content.append(stack);
 }
 
-function showPracticeControls(data) {
+function showPrintPreview(questions) {
+  const paper = element('article', '', 'exam-paper');
+  const heading = element('header', '', 'exam-paper-header');
+  heading.append(
+    element('p', `${exam.title} · 연습용`),
+    element('h3', `${subject} 시험지`),
+    element('p', '반 ______　번호 ______　이름 ______________', 'exam-student')
+  );
+  const items = element('ol', '', 'exam-paper-items');
+  for (const question of questions) {
+    const item = element('li', '', 'exam-paper-question');
+    item.append(element('p', question.prompt, 'exam-paper-prompt'));
+    if (question.passage) {
+      const passage = element('p', question.passage, 'exam-paper-passage');
+      if (subject === '영어') passage.lang = 'en';
+      item.append(passage);
+    }
+    const choices = element('ol', '', 'exam-paper-choices');
+    for (const choice of question.choices) choices.append(element('li', choice));
+    item.append(choices);
+    items.append(item);
+  }
+  paper.append(heading, element('p', `총 ${questions.length}문항 · 알맞은 답을 하나씩 고르세요.`, 'exam-instructions'), items);
+  document.querySelector('#exam-preview-paper').replaceChildren(paper);
+  document.querySelector('#exam-print-output').replaceChildren(paper.cloneNode(true));
+  document.querySelector('#exam-print-preview').showModal();
+}
+
+function showPracticeControls(data, questions) {
   const controls = element('div', '', 'practice-controls');
+  const print = element('button', '시험지 출력', 'primary');
+  print.type = 'button';
+  print.addEventListener('click', () => showPrintPreview(questions));
+  content.append(controls);
+
+  if (!data.practiceSets?.length) {
+    controls.append(print);
+    return;
+  }
   const next = element('button', '다른 문제 풀기');
   next.type = 'button';
   const message = element('p', '', 'study-intro');
   message.setAttribute('role', 'status');
-  controls.append(next, message);
-  content.append(controls);
+  controls.append(next, print, message);
   next.addEventListener('click', () => {
     const blocker = studyWorkBlockReason('다른 문제를 열어 주세요.');
     if (blocker) {
@@ -282,7 +318,7 @@ function renderContent() {
     if (view === 'practice' && data.practiceIntro) {
       content.append(element('p', data.practiceIntro, 'study-intro'));
     }
-    if (view === 'practice' && data.practiceSets?.length) showPracticeControls(data);
+    if (view === 'practice') showPracticeControls(data, questions);
     showQuestions(questions);
     return;
   }
@@ -340,6 +376,10 @@ window.addEventListener('storage', (event) => {
   } catch {
     showStorageWarning();
   }
+});
+document.querySelector('#exam-print-confirm').addEventListener('click', () => window.print());
+document.querySelector('#exam-print-preview').addEventListener('close', () => {
+  document.querySelector('#exam-print-output').replaceChildren();
 });
 document.querySelector('#exam-note').textContent = exam.note;
 renderSubjects();
