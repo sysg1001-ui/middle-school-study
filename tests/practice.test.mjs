@@ -78,6 +78,17 @@ function openPage(session, local, options = {}) {
   const questions = () => [...content.walk()].filter((node) => node.tag === 'h3').map((node) => node.textContent);
   return {
     context, questions, window,
+    signatures() {
+      return [...content.walk()].filter(node => node.tag === 'article').map(card => {
+        const prompt = card.children.find(node => node.tag === 'h3').textContent.replace(/^\d+\. /, '');
+        const passage = card.children.find(node => node.className === 'passage')?.textContent;
+        return JSON.stringify([prompt, passage]);
+      }).sort();
+    },
+    chooseSubject(subject) {
+      const option = [...document.querySelector('#subjects').walk()].find(node => node.textContent === subject);
+      option.events.click();
+    },
     selectAnswer(index) {
       const form = [...content.walk()].find((node) => node.tag === 'form');
       form.selection = String(index);
@@ -107,22 +118,38 @@ function openPage(session, local, options = {}) {
   };
 }
 
-test('two disjoint 16-question sets per subject retain all earlier question IDs', () => {
+function membership(questions) {
+  return questions.map(prompt => prompt.replace(/^\d+\. /, '')).sort();
+}
+
+test('the 40-question bank and full rotation preserve earlier IDs and avoid consecutive repeats', () => {
   const page = openPage(new Map(), new Map());
   const subjects = Object.entries(runInContext('exams[0].subjects', page.context));
   const earlierSets = runInContext('midtermPracticeSets', page.context);
   for (const [subject, data] of subjects) {
-    assert.equal(data.practiceSets.length, 2);
-    const sets = data.practiceSets;
-    assert(sets.every((questions) => questions.length === 16));
-    const ids = new Set(sets.flat().map(question => question.id));
-    assert.equal(ids.size, 32);
+    const bank = data.practiceBank;
+    const ids = new Set(bank.map(question => question.id));
+    assert.equal(bank.length, 40);
+    assert.equal(ids.size, 40);
     assert([data.questions, ...earlierSets[subject]].flat().every(question => ids.has(question.id)));
-    assert.equal(new Set(sets.flat().map(({ prompt, passage }) => JSON.stringify([prompt, passage]))).size, 32);
-    for (const question of sets.flat()) {
+    assert.equal(new Set(bank.map(({ prompt, passage }) => JSON.stringify([prompt, passage]))).size, 40);
+    for (const question of bank) {
       assert.equal(new Set(question.choices).size, 4);
       assert(question.choices[question.answer] && question.explanation);
     }
+    page.chooseSubject(subject);
+    const seen = new Set();
+    let previous = [];
+    for (let round = 0; round < bank.length; round += 1) {
+      const current = page.signatures();
+      assert.equal(new Set(current).size, 16);
+      assert(current.every(prompt => !previous.includes(prompt)));
+      seen.add(JSON.stringify(current));
+      previous = current;
+      page.next();
+    }
+    assert.equal(seen.size, 40);
+    assert(page.signatures().every(prompt => !previous.includes(prompt)));
   }
 });
 
@@ -143,7 +170,7 @@ test('refresh and manual rotation offer different questions while old wrong answ
   const session = new Map();
   const first = openPage(session, records);
   const original = first.questions();
-  first.selectAnswer(0);
+  first.selectAnswer(runInContext('(practiceQuestions(exam.subjects[subject])[0].answer + 1) % 4', first.context));
   assert(first.window.studyUpdateBlockReason());
   first.next();
   assert.deepEqual(first.questions(), original);
@@ -151,16 +178,16 @@ test('refresh and manual rotation offer different questions while old wrong answ
   assert.equal(first.window.studyUpdateBlockReason(), '');
   const second = openPage(session, records);
   const other = second.questions();
-  assert(other.length === 16 && other.every((prompt) => !original.includes(prompt)));
-  second.selectAnswer(1);
+  assert(other.length === 16 && membership(other).every(prompt => !membership(original).includes(prompt)));
+  second.selectAnswer(runInContext('(practiceQuestions(exam.subjects[subject])[0].answer + 1) % 4', second.context));
   second.grade();
   second.next();
   const third = second.questions();
-  assert.deepEqual(third, original);
+  assert.notDeepEqual(membership(third), membership(original));
+  assert(membership(third).every(prompt => !membership(other).includes(prompt)));
   second.review();
   assert.equal(second.questions().length, 2);
-  assert(second.questions().includes(original[0]));
-  assert(second.questions()[1].endsWith(other[0].slice(3)));
+  assert.deepEqual(membership(second.questions()), membership([original[0], other[0]]));
   assert.equal(records.get('unrelated'), 'keep');
 });
 
@@ -176,6 +203,6 @@ test('reload advances the question set with history state when session storage i
   const options = { sessionStorage, history };
   const previous = openPage(new Map(), new Map(), options).questions();
   const current = openPage(new Map(), new Map(), options).questions();
-  assert(current.every((question) => !previous.includes(question)));
+  assert(membership(current).every(prompt => !membership(previous).includes(prompt)));
   assert.equal(history.state.unrelated, 'keep');
 });
