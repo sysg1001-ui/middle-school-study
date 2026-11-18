@@ -6,6 +6,26 @@ const midtermNotes = {
       {
         title: 'Ⅳ. 물질의 상태 변화',
         pages: '교과서 110~152쪽',
+        readings: [
+          {
+            title: "차가운 컵의 겉에 물방울이 생긴 까닭",
+            source: "상태 변화 · 새 실험 관찰 예시",
+            paragraphs: [
+              ["얼음물을 담은 마른 컵을 책상에 올려놓았다. 잠시 뒤 ","컵 안쪽이 아니라 마른 컵의 겉면에 물방울이 생겼다."," 같은 책상의 실온 물컵에서는 겉면에 물방울이 생기지 않았다."],
+              ["차가운 컵 가까이의 공기가 식었다. 공기 중 ","수증기가 열에너지를 내보내고 액체 물로 바뀌었다.",""]
+            ],
+            reason: "첫째 밑줄은 관찰한 결과, 둘째는 결과를 설명하는 까닭이에요. 기체 → 액체이므로 액화예요."
+          },
+          {
+            title: "계속 가열해도 온도가 일정한 구간",
+            source: "가열 그래프 · 새 관찰 예시",
+            paragraphs: [
+              ["일정한 압력에서 순수한 물을 가열했다. 처음에는 온도가 올라갔지만, ","물이 끓는 동안에는 가열을 계속해도 온도가 일정했다.",""],
+              ["그동안 용기에는 ","액체 물이 남아 있었고, 물속 기포를 통해 수증기도 나왔다.",""]
+            ],
+            reason: "온도가 일정해도 열에너지를 계속 흡수해요. 에너지가 상태 변화에 쓰여 물과 수증기가 함께 있어요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 입자와 물질의 세 상태', [
             ['고체', '입자가 가까이 있고 제자리 근처에서 진동 → 모양과 부피가 일정.'],
@@ -45,6 +65,26 @@ const midtermNotes = {
       {
         title: 'Ⅴ. 힘의 작용',
         pages: '교과서 154~192쪽',
+        readings: [
+          {
+            title: "일정한 속력으로 끄는 상자",
+            source: "합력과 운동 · 새 관찰 예시",
+            paragraphs: [
+              ["상자를 수평으로 끌었다. ","오른쪽으로 7 N을 가하자 상자는 오른쪽으로 일정한 속력으로 움직였다.",""],
+              ["그 순간 수평 방향의 힘은 서로 균형을 이뤘다. ","바닥이 상자에 가하는 마찰력은 왼쪽으로 7 N이다.",""]
+            ],
+            reason: "속력과 방향이 일정하다는 것이 합력 0 N의 근거예요. 움직이는 방향과 합력의 방향을 구분하세요."
+          },
+          {
+            title: "물에 띄운 블록이 멈추는 순간",
+            source: "부력과 중력 · 새 관찰 예시",
+            paragraphs: [
+              ["나무 블록을 물 위에 놓았다. 잠시 흔들리다가 ","일부가 물에 잠긴 채 떠서 움직이지 않았다.",""],
+              ["블록의 무게를 재니 3 N이었다. 물에 떠 있을 때 ","물은 블록을 위쪽으로 3 N만큼 밀어 올린다.",""]
+            ],
+            reason: "정지했다는 단서로 힘의 평형을 판단해요. 위쪽 부력과 아래쪽 중력은 크기가 같고 방향이 반대예요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 힘 네 가지', [
             ['중력', '지구 중심 방향. 물체의 무게는 중력의 크기(N), 질량은 물질의 양(kg).'],
@@ -90,6 +130,17 @@ const midtermNotes = {
       {
         title: 'Ⅳ. 좌표평면과 그래프 · 정비례와 반비례',
         pages: '122~195쪽 시험 범위 중',
+        readings: [
+          {
+            title: "한 점으로 정비례식과 반비례식 구별하기",
+            source: "좌표와 식 · 새 풀이 예시",
+            paragraphs: [
+              ["두 그래프 모두 점 (4, 12)를 지난다. 정비례라면 ","비례상수는 y ÷ x이므로 12 ÷ 4 = 3","이다. 식은 y = 3x다."],
+              ["반비례라면 ","비례상수는 x × y이므로 4 × 12 = 48","이다. 식은 y = 48/x다."]
+            ],
+            reason: "같은 점이 주어져도 정비례는 나누고 반비례는 곱해요. 식을 세우기 전에 어떤 관계인지 먼저 확인하세요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 정비례와 반비례', [
             ['정비례 y=ax', 'x가 2배면 y도 2배. y/x가 일정(x≠0). 원점을 지나는 직선.'],
@@ -118,6 +169,17 @@ const midtermNotes = {
       {
         title: 'Ⅴ. 기본 도형과 작도',
         pages: '122~195쪽 시험 범위 중',
+        readings: [
+          {
+            title: "삼각형 두 개가 합동인지 확인하기",
+            source: "기본 도형과 작도 · 새 풀이 예시",
+            paragraphs: [
+              ["△ABC에서 AB = 4 cm, AC = 6 cm, ∠A = 50°이다. △DEF에서 DE = 4 cm, DF = 6 cm, ∠D = 50°이다. ","∠A와 ∠D는 주어진 두 변 사이의 각이다.",""],
+              ["대응하는 두 변과 끼인각이 각각 같으므로 ","△ABC와 △DEF는 SAS 합동이다.",""]
+            ],
+            reason: "각이 두 변 사이에 있는지가 SAS의 핵심이에요. 한편 삼각형을 작도할 때는 가장 긴 변이 나머지 두 변의 합보다 작은지도 확인해요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 각과 위치 관계', [
             ['직선·반직선·선분', '직선은 양쪽 끝없이, 반직선은 시작점에서 한쪽 끝없이, 선분은 두 끝점 사이.'],
@@ -151,6 +213,17 @@ const midtermNotes = {
       {
         title: 'Ⅵ. 평면도형의 성질 · 다각형의 내각과 외각까지',
         pages: '122~195쪽 중 해당 내용',
+        readings: [
+          {
+            title: "정다각형의 한 내각에서 변의 수 찾기",
+            source: "평면도형 · 새 풀이 예시",
+            paragraphs: [
+              ["정다각형의 한 내각이 144°다. 이웃한 외각은 그 내각과 합이 180°이므로 ","한 외각은 180° − 144° = 36°","이다."],
+              ["정다각형은 외각의 크기가 모두 같다. ","외각의 합 360°를 36°로 나누면 변이 10개","다."]
+            ],
+            reason: "변의 수를 구하는 순서는 ‘한 내각 → 한 외각 → 외각의 합 ÷ 한 외각’이에요. 360°를 내각으로 나누지 않아요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 각의 공식', [
             ['삼각형 내각', '세 내각의 합은 180°.'],
@@ -178,6 +251,17 @@ const midtermNotes = {
       {
         title: 'Ⅵ. 단원 마무리 · 다각형과 부채꼴',
         pages: '학교 지정 205~207쪽',
+        readings: [
+          {
+            title: "부채꼴이 원에서 차지하는 비율 찾기",
+            source: "원과 부채꼴 · 새 풀이 예시",
+            paragraphs: [
+              ["반지름이 6 cm이고 중심각이 120°인 부채꼴을 생각해 보자. ","120° ÷ 360° = 1/3이므로 원 전체의 1/3","이다."],
+              ["원의 넓이는 π × 6² = 36π cm²이다. 따라서 ","부채꼴의 넓이는 36π × 1/3 = 12π cm²","이다."]
+            ],
+            reason: "밑줄의 비율은 호의 길이에도 같아요. 호의 길이는 원둘레 12π cm의 1/3인 4π cm예요. 넓이는 cm², 길이는 cm로 써요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 원과 부채꼴 공식', [
             ['호와 현', '호는 원 둘레의 휘어진 부분. 현은 원 위의 두 점을 직선으로 이은 선분. 중심각은 꼭짓점이 원의 중심인 각.'],
@@ -210,6 +294,19 @@ const midtermNotes = {
       {
         title: 'Lesson 4. The Joy of Traveling',
         pages: '63~75쪽 · 본문 64~68쪽 · 문법 70~71쪽',
+        readings: [
+          {
+            title: "여행 일정에서 이미 한 일과 할 일 구별하기",
+            source: "Lesson 4 표현으로 새로 쓴 영어 지문",
+            lang: 'en',
+            translation: "우리는 오늘 아침 구시가지를 걸어 다녔다. 점심 먹고 배를 탈 예정이다. 물 위에서 등대를 보는 게 기대된다. 여동생은 사진 찍기를 좋아해서 카메라를 가져간다.",
+            paragraphs: [
+              ["We walked around the old town this morning. ","We are going to take a boat after lunch.",""],
+              ["","I look forward to seeing the lighthouse from the water."," My sister enjoys taking pictures, so she is bringing her camera."]
+            ],
+            reason: "첫째 밑줄은 앞으로 할 계획이에요. be going to 뒤에는 동사원형 take가 와요. 둘째 밑줄은 기대하는 일이고, look forward to 뒤에는 seeing처럼 -ing형이 와요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 장소와 색', [
             ['스페인 론다 · 흰색', '민지와 가족. 절벽 위의 흰 건물. 점심을 먹고 헤밍웨이 산책길에 갈 계획. 민지가 특히 좋아한 음식은 추로스.'],
@@ -244,6 +341,19 @@ const midtermNotes = {
       {
         title: 'Lesson 5. Think like Sherlock Holmes!',
         pages: '76~91쪽 · 본문 82~84쪽 · 문법 86~87쪽',
+        readings: [
+          {
+            title: "탐정이 본 두 단서 연결하기",
+            source: "Lesson 5 표현으로 새로 쓴 영어 지문",
+            lang: 'en',
+            translation: "문 옆에 우산 두 개가 있었다. 하나는 노란색이고 다른 하나는 검은색이었다. 영상에는 노란 우산을 든 사람이 보였다. 그 사람은 경비원보다 키가 컸다. 두 단서에 모두 맞는 방문객은 한 명뿐이었다.",
+            paragraphs: [
+              ["","There were two umbrellas by the door."," One was yellow and the other was black."],
+              ["The camera showed a person with the yellow umbrella. ","The person was taller than the guard."," Only one visitor fit both clues."]
+            ],
+            reason: "There were 뒤에 복수 two umbrellas가 나와요. taller than은 두 사람의 키를 비교하는 표현이에요. 범인을 좁히려면 ‘노란 우산’과 ‘경비원보다 큰 키’를 모두 확인해요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 모나리자 사건의 단서', [
             ['사건', '토요일, 콜롬비아 보고타의 보테로 박물관에서 누군가 모나리자 그림에 케이크를 던짐. 금요일은 범인이 케이크를 산 날.'],
@@ -278,6 +388,19 @@ const midtermNotes = {
       {
         title: 'Lesson 6. Good for the Earth, Good for Us',
         pages: '92~107쪽 · 본문 98~100쪽 · 문법 102~103쪽',
+        readings: [
+          {
+            title: "제로 웨이스트를 실천한 이유 찾기",
+            source: "Lesson 6 표현으로 새로 쓴 영어 지문",
+            lang: 'en',
+            translation: "금요일에 밥을 너무 많이 지었다. 우리는 남은 음식을 다음 날 점심으로 남겨 두기로 했다. 토요일에는 각자 가져온 용기를 썼다. 나는 작은 선택이 쓰레기를 줄일 수 있다고 생각한다.",
+            paragraphs: [
+              ["On Friday, we cooked too much rice. ","We decided to save the leftovers for lunch the next day.",""],
+              ["On Saturday, we used our own containers. ","I think that small choices can cut down on waste.",""]
+            ],
+            reason: "decided 뒤에는 to + 동사원형인 to save가 와요. think 뒤의 that 안에는 주어 small choices와 동사 can cut이 있어요. 첫째 밑줄은 실천, 둘째는 글쓴이의 생각이에요."
+          }
+        ],
         sections: [
           ['먼저 외우기 · 제로 웨이스트 참가자 네 명', [
             ['올리비아 · 음식물 줄이기', '생일 외식에서 남은 음식을 집에 가져오고 다음 날 점심으로 활용.'],

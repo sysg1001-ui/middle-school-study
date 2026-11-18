@@ -156,9 +156,11 @@ function showNoteReadings(chapter, readings) {
     article.append(element('p', reading.source, 'note-reading-source'), element('h5', reading.title));
     for (const [before, evidence, after] of reading.paragraphs) {
       const paragraph = element('p');
+      if (reading.lang) paragraph.lang = reading.lang;
       paragraph.append(document.createTextNode(before), element('strong', evidence, 'reading-evidence'), document.createTextNode(after));
       article.append(paragraph);
     }
+    if (reading.translation) article.append(element('p', `해석 · ${reading.translation}`, 'reading-translation'));
     article.append(element('p', reading.reason, 'reading-reason'));
     section.append(article);
   }

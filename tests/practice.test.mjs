@@ -153,16 +153,23 @@ test('the 40-question bank and full rotation preserve earlier IDs and avoid cons
   }
 });
 
-test('print uses the full current set and Korean notes expose underlined evidence', () => {
+test('print uses the full current set and every subject includes notes with underlined evidence', () => {
   const page = openPage(new Map(), new Map());
   const paper = page.print();
   const prompts = [...paper.walk()].filter(node => node.className === 'exam-paper-prompt');
   assert.deepEqual(prompts.map((node, index) => `${index + 1}. ${node.textContent}`), page.questions());
   assert.equal(prompts.length, 16);
-  const notes = page.notes('국어');
-  const evidence = [...notes.walk()].filter(node => node.className === 'reading-evidence');
-  assert.equal(evidence.length, 10);
-  assert(evidence.every(node => node.textContent));
+  for (const [subject, count] of Object.entries({ 과학: 4, 수학: 4, 영어: 3, 국어: 5 })) {
+    const nodes = [...page.notes(subject).walk()];
+    assert.equal(nodes.filter(node => node.className === 'note-reading').length, count);
+    const evidence = nodes.filter(node => node.className === 'reading-evidence');
+    assert.equal(evidence.length, 2 * count);
+    assert(evidence.every(node => node.textContent));
+    if (subject === '영어') {
+      assert.equal(nodes.filter(node => node.lang === 'en').length, 2 * count);
+      assert.equal(nodes.filter(node => node.className === 'reading-translation').length, count);
+    }
+  }
 });
 
 test('refresh and manual rotation offer different questions while old wrong answers remain reviewable', () => {
