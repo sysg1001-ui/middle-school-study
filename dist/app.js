@@ -374,7 +374,7 @@ function renderSubjects() {
 function renderView(moveFocus = false) {
   const hash = location.hash.slice(1);
   view = Object.hasOwn(viewLabels, hash) ? hash : 'summary';
-  title.textContent = view === 'summary' && exam.id === 'sample' ? '시험 범위 요약' : viewLabels[view];
+  title.textContent = viewLabels[view];
   examPicker.closest('.controls').hidden = view === 'textbooks';
   subjectPicker.hidden = view === 'textbooks';
   for (const link of menu) {
