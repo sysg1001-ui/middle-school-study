@@ -7,7 +7,7 @@ const exams = [
     subjects: {
       과학: {
         ...midtermStudy.과학,
-        practiceSets: midtermPracticeSets.과학,
+        practiceSets: makeMidtermSets('과학'),
         notes: midtermNotes.과학,
         summaries: [
           ['Ⅳ. 물질의 상태변화', '교과서 110~152쪽'],
@@ -16,7 +16,7 @@ const exams = [
       },
       영어: {
         ...midtermStudy.영어,
-        practiceSets: midtermPracticeSets.영어,
+        practiceSets: makeMidtermSets('영어'),
         notes: midtermNotes.영어,
         summaries: [
           ['Lesson 4. The Joy of Traveling', '교과서 63~75쪽'],
@@ -27,7 +27,7 @@ const exams = [
       },
       수학: {
         ...midtermStudy.수학,
-        practiceSets: midtermPracticeSets.수학,
+        practiceSets: makeMidtermSets('수학'),
         notes: midtermNotes.수학,
         summaries: [
           ['정비례부터 다각형의 내각과 외각의 크기의 합까지', 'Ⅳ. 좌표평면과 그래프 3. 정비례 ~ Ⅵ. 평면도형의 성질 3. 다각형의 내각과 외각의 크기의 합'],
@@ -36,7 +36,7 @@ const exams = [
       },
       국어: {
         ...midtermStudy.국어,
-        practiceSets: midtermPracticeSets.국어,
+        practiceSets: makeMidtermSets('국어'),
         notes: midtermNotes.국어,
         summaries: [
           ['1. 갈등에서 소통으로', '(1) 갈등으로 읽는 문학 · 교과서 10~45쪽'],

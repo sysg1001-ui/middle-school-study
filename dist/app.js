@@ -69,7 +69,7 @@ function questionKey(subjectName, question) {
 }
 
 function questionSets(data) {
-  return [data.questions, ...(data.practiceSets ?? [])];
+  return data.practiceSets ?? [data.questions];
 }
 
 function setPracticeRound(round) {
@@ -130,7 +130,7 @@ function showScope(data) {
   }
   content.append(grid);
   if (data.notes) addStudyLink(`${subject} 요약정리 보기`, '#notes');
-  else if (data.questions.length) addStudyLink(`${subject} 문제 ${data.questions.length}개 풀기`, '#practice');
+  else if (data.questions.length) addStudyLink(`${subject} 문제 ${questionSets(data)[0].length}개 풀기`, '#practice');
 }
 
 function addStudyLink(label, href) {
@@ -141,14 +141,34 @@ function addStudyLink(label, href) {
   content.append(actions);
 }
 
+function showNoteReadings(chapter, readings) {
+  const section = element('section', '', 'note-readings');
+  section.append(element('h4', '지문 읽기 · 밑줄에서 근거 찾기'));
+  for (const reading of readings) {
+    const article = element('article', '', 'note-reading');
+    article.append(element('p', reading.source, 'note-reading-source'), element('h5', reading.title));
+    for (const [before, evidence, after] of reading.paragraphs) {
+      const paragraph = element('p');
+      paragraph.append(document.createTextNode(before), element('strong', evidence, 'reading-evidence'), document.createTextNode(after));
+      article.append(paragraph);
+    }
+    article.append(element('p', reading.reason, 'reading-reason'));
+    section.append(article);
+  }
+  chapter.append(section);
+}
+
 function showNotes(data) {
   const { intro, units, sources } = data.notes;
-  content.append(element('p', '먼저 외우기 → 안 보고 답해 보기 → 문제 풀기', 'study-order'));
+  const order = units.some(unit => unit.readings) ? '지문에서 근거 찾기 → 요약정리 → 문제 풀기'
+    : '먼저 외우기 → 안 보고 답해 보기 → 문제 풀기';
+  content.append(element('p', order, 'study-order'));
   if (intro) content.append(element('p', intro, 'study-intro'));
   const stack = element('div', '', 'stack study-notes');
   for (const unit of units) {
     const chapter = card(unit.title);
     chapter.prepend(element('p', unit.pages, 'tag'));
+    if (unit.readings?.length) showNoteReadings(chapter, unit.readings);
     for (const [heading, entries] of unit.sections) {
       const section = element('section', '', 'note-section');
       const list = element('dl', '', 'note-list');
@@ -180,7 +200,7 @@ function showNotes(data) {
     }
     content.append(references);
   }
-  if (data.questions.length) addStudyLink(`${subject} 문제 ${data.questions.length}개 풀기`, '#practice');
+  if (data.questions.length) addStudyLink(`${subject} 문제 ${questionSets(data)[0].length}개 풀기`, '#practice');
 }
 
 function showQuestions(questions) {
