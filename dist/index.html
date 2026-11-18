@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="과목별 시험 범위 요약을 읽고 문제를 풀며 오답을 복습하는 중학 시험 공부방.">
+  <meta name="study-build" content="{{BUILD_ID}}">
+  <meta name="theme-color" content="#f7f7fd">
+  <title>중학 시험 공부방</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="{{ASSET_PATH}}icon-180.png">
+  <link rel="stylesheet" href="{{ASSET_PATH}}style.css">
+  <script src="{{ASSET_PATH}}midterm.js" defer></script>
+  <script src="{{ASSET_PATH}}study-notes.js" defer></script>
+  <script src="{{ASSET_PATH}}practice-sets.js" defer></script>
+  <script src="{{ASSET_PATH}}materials.js" defer></script>
+  <script src="{{ASSET_PATH}}app.js" defer></script>
+  <script src="{{ASSET_PATH}}update.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 이동</a>
+  <header class="masthead">
+    <div class="wrap topbar">
+      <a class="brand" href="#summary"><span aria-hidden="true">✦</span> 중학 시험 공부방</a>
+      <nav aria-label="학습 메뉴">
+        <a href="#summary" data-view="summary">시험 범위</a>
+        <a href="#notes" data-view="notes">요약정리</a>
+        <a href="#practice" data-view="practice">문제 풀기</a>
+        <a href="#review" data-view="review">오답 노트<span id="review-count" hidden></span></a>
+        <a href="#textbooks" data-view="textbooks">교과서</a>
+      </nav>
+    </div>
+  </header>
+  <aside id="study-update" class="update-banner" aria-label="공부방 업데이트" hidden>
+    <div class="wrap update-inner">
+      <div role="status" aria-atomic="true">
+        <strong id="study-update-title"></strong>
+        <p id="study-update-detail" hidden></p>
+      </div>
+      <button id="study-update-button" type="button" class="primary">새로고침</button>
+    </div>
+  </aside>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <p class="hero-label">중학교 내신 대비</p>
+        <h1 id="title">오늘은 뭘<br>공부할까<span>?</span></h1>
+        <p>시험 범위를 정리하고, 문제로 확인하고,<br class="mobile-break"> 틀린 문제는 한 번 더.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><span>✦</span><i></i><b>✓</b></div>
+    </section>
+    <div class="controls">
+      <label for="exam">시험 선택</label>
+      <select id="exam"></select>
+      <p id="exam-note"></p>
+    </div>
+    <div id="workspace" aria-labelledby="section-title">
+      <h2 id="section-title" tabindex="-1"></h2>
+      <div id="subjects" class="subjects" aria-label="과목 선택"></div>
+      <div id="content"></div>
+    </div>
+    <template id="textbook-list">
+      <div class="card textbook-card">
+        <table class="textbooks">
+          <caption>1학년 · 2022 개정 교육과정 · 13권 배부</caption>
+          <thead>
+            <tr><th scope="col">과목</th><th scope="col">교과서</th><th scope="col">출판사·저자</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">국어</th><td>국어1-1, 국어1-2</td><td>해냄에듀 <span>강양희</span></td></tr>
+            <tr><th scope="row">수학</th><td>수학1</td><td>미래엔 <span>황선욱</span></td></tr>
+            <tr><th scope="row">사회</th><td>사회1</td><td>천재교과서 <span>허수미</span></td></tr>
+            <tr><th scope="row">사회</th><td>사회과부도 <span>2년간 사용</span></td><td>천재교과서 <span>황병삼</span></td></tr>
+            <tr><th scope="row">과학</th><td>과학1</td><td>비상교육 <span>임태훈</span></td></tr>
+            <tr><th scope="row">도덕</th><td>도덕1</td><td>리베르스쿨 <span>박병기</span></td></tr>
+            <tr><th scope="row">영어</th><td>영어1</td><td>동아출판 <span>윤정미</span></td></tr>
+            <tr><th scope="row">체육</th><td>체육1,2 <span>3년간 사용</span></td><td>씨마스 <span>박경석</span></td></tr>
+            <tr><th scope="row">음악</th><td>음악1</td><td>세광음악출판사 <span>허화병</span></td></tr>
+            <tr><th scope="row">미술</th><td>미술1</td><td>미진사 <span>김경희</span></td></tr>
+            <tr><th scope="row">한문</th><td>한문</td><td>박영사 <span>최상근</span></td></tr>
+            <tr><th scope="row">정보</th><td>정보</td><td>씨마스 <span>서태원 외 7명</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
+    <noscript>학습 기능을 이용하려면 브라우저에서 자바스크립트를 켜 주세요.</noscript>
+  </main>
+  <footer class="wrap">
+    <p>학습 기록은 현재 브라우저에 저장됩니다.<span id="storage-status" role="status"></span></p>
+    <details class="releases">
+      <summary>버전 {{VERSION}} · 업데이트 내역</summary>
+      <p>빌드 <code>{{BUILD_ID}}</code></p>
+      <p id="study-worker-status">자동 업데이트 상태를 확인하고 있어요.</p>
+      <ol>{{RELEASES}}</ol>
+    </details>
+  </footer>
+</body>
+</html>
