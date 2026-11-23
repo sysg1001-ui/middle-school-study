@@ -131,7 +131,7 @@ test('the final exam has two subjects with full banks, annotated notes, and prin
   const page = openPage(new Map(), new Map());
   const subjects = runInContext('finalExam.subjects', page.context);
   assert.deepEqual(Object.keys(subjects), ['사회', '한문']);
-  page.chooseExam('grade1-semester2-final');
+  assert.equal(runInContext('exam.id', page.context), 'grade1-semester2-final');
   for (const [subject, units] of Object.entries({ 사회: 4, 한문: 6 })) {
     page.chooseSubject(subject);
     const bank = subjects[subject].practiceBank;
@@ -158,7 +158,8 @@ test('the final exam has two subjects with full banks, annotated notes, and prin
 
 test('the 40-question bank and full rotation preserve earlier IDs and avoid consecutive repeats', () => {
   const page = openPage(new Map(), new Map());
-  const subjects = Object.entries(runInContext('exams[0].subjects', page.context));
+  page.chooseExam('grade1-semester2-midterm');
+  const subjects = Object.entries(runInContext('exam.subjects', page.context));
   const earlierSets = runInContext('midtermPracticeSets', page.context);
   for (const [subject, data] of subjects) {
     const bank = data.practiceBank;
@@ -189,6 +190,7 @@ test('the 40-question bank and full rotation preserve earlier IDs and avoid cons
 
 test('print uses the full current set and every subject includes notes with underlined evidence', () => {
   const page = openPage(new Map(), new Map());
+  page.chooseExam('grade1-semester2-midterm');
   const paper = page.print();
   const prompts = [...paper.walk()].filter(node => node.className === 'exam-paper-prompt');
   assert.deepEqual(prompts.map((node, index) => `${index + 1}. ${node.textContent}`), page.questions());
