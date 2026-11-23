@@ -4,7 +4,7 @@ import { createContext, runInContext } from 'node:vm';
 import test from 'node:test';
 
 const scripts = await Promise.all(
-  ['midterm', 'study-notes', 'practice-sets', 'materials', 'app'].map((name) =>
+  ['midterm', 'study-notes', 'practice-sets', 'finals', 'materials', 'app'].map((name) =>
     readFile(new URL(`../dist/${name}.js`, import.meta.url), 'utf8')
   )
 );
@@ -78,6 +78,11 @@ function openPage(session, local, options = {}) {
   const questions = () => [...content.walk()].filter((node) => node.tag === 'h3').map((node) => node.textContent);
   return {
     context, questions, window,
+    chooseExam(id) {
+      const picker = document.querySelector('#exam');
+      picker.value = id;
+      picker.events.change();
+    },
     signatures() {
       return [...content.walk()].filter(node => node.tag === 'article').map(card => {
         const prompt = card.children.find(node => node.tag === 'h3').textContent.replace(/^\d+\. /, '');
@@ -121,6 +126,35 @@ function openPage(session, local, options = {}) {
 function membership(questions) {
   return questions.map(prompt => prompt.replace(/^\d+\. /, '')).sort();
 }
+
+test('the final exam has two subjects with full banks, annotated notes, and printable sets', () => {
+  const page = openPage(new Map(), new Map());
+  const subjects = runInContext('finalExam.subjects', page.context);
+  assert.deepEqual(Object.keys(subjects), ['사회', '한문']);
+  page.chooseExam('grade1-semester2-final');
+  for (const [subject, units] of Object.entries({ 사회: 4, 한문: 6 })) {
+    page.chooseSubject(subject);
+    const bank = subjects[subject].practiceBank;
+    assert.equal(bank.length, 36);
+    assert.equal(new Set(bank.map(question => question.id)).size, 36);
+    for (const question of bank) {
+      assert.equal(new Set(question.choices).size, 4);
+      assert(question.choices[question.answer] && question.explanation);
+    }
+    const current = page.signatures();
+    assert.equal(current.length, 16);
+    page.next();
+    assert(page.signatures().every(question => !current.includes(question)));
+    const paper = page.print();
+    assert.equal([...paper.walk()].filter(node => node.className === 'exam-paper-prompt').length, 16);
+    const notes = page.notes(subject);
+    assert.equal([...notes.walk()].filter(node => node.className === 'reading-evidence').length, units * 2);
+    page.chooseExam('grade1-semester2-midterm');
+    page.window.events.hashchange();
+    page.chooseExam('grade1-semester2-final');
+    runInContext("location.hash = '#practice'; window.events.hashchange()", page.context);
+  }
+});
 
 test('the 40-question bank and full rotation preserve earlier IDs and avoid consecutive repeats', () => {
   const page = openPage(new Map(), new Map());
