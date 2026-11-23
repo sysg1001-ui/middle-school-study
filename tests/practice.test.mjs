@@ -78,6 +78,9 @@ function openPage(session, local, options = {}) {
   const questions = () => [...content.walk()].filter((node) => node.tag === 'h3').map((node) => node.textContent);
   return {
     context, questions, window,
+    hanmunReadings() {
+      return [...content.walk()].filter(node => node.className === 'hanmun-readings').map(node => node.textContent);
+    },
     chooseExam(id) {
       const picker = document.querySelector('#exam');
       picker.value = id;
@@ -126,6 +129,30 @@ function openPage(session, local, options = {}) {
 function membership(questions) {
   return questions.map(prompt => prompt.replace(/^\d+\. /, '')).sort();
 }
+
+test('Hanmun question and choice readings appear only after grading', () => {
+  const page = openPage(new Map(), new Map());
+  page.chooseSubject('한문');
+  const bank = runInContext('finalHanmunBank', page.context);
+  for (const question of bank) {
+    const terms = new Set([question.prompt, question.passage, ...question.choices]
+      .flatMap(text => text?.match(/\p{Script=Han}+(?:[ \t]+\p{Script=Han}+)*/gu) ?? []));
+    assert(terms.size > 0);
+    assert.equal(question.readings.length, terms.size);
+    assert(question.readings.every(reading => /^[\p{Script=Han} ]+\([가-힣 ]+\)$/u.test(reading)));
+  }
+  assert(bank.find(question => question.prompt.startsWith('送舊迎新')).readings.includes('送舊迎新(송구영신)'));
+  assert.deepEqual(page.hanmunReadings(), []);
+  page.selectAnswer(0);
+  assert.deepEqual(page.hanmunReadings(), []);
+  page.grade();
+  assert.equal(page.hanmunReadings().length, 1);
+  assert.match(page.hanmunReadings()[0], /^한자 읽기 · /);
+  page.chooseSubject('사회');
+  page.selectAnswer(0);
+  page.grade();
+  assert.deepEqual(page.hanmunReadings(), []);
+});
 
 test('the final exam has two subjects with full banks, annotated notes, and printable sets', () => {
   const page = openPage(new Map(), new Map());
