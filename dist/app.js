@@ -261,6 +261,9 @@ function showQuestions(questions) {
       feedback.hidden = false;
       const result = correct ? '정답이에요!' : `정답은 ‘${question.choices[question.answer]}’입니다.`;
       feedback.textContent = `${result} ${question.explanation}`;
+      if (question.readings?.length) {
+        feedback.append(element('span', `한자 읽기 · ${question.readings.join(' · ')}`, 'hanmun-readings'));
+      }
       updateReviewCount();
     });
     section.append(form);
