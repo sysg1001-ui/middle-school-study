@@ -1,4 +1,6 @@
+// Newest exams go first. The first entry is also the default selection.
 const exams = [
+  finalExam,
   {
     id: 'grade1-semester2-midterm',
     title: '1학년 2학기 중간고사',
@@ -45,6 +47,5 @@ const exams = [
         ]
       }
     }
-  },
-  finalExam
+  }
 ];
