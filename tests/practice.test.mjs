@@ -213,8 +213,14 @@ test('all final exam subjects provide annotated notes, disjoint practice sets, p
     page.grade();
     page.review();
     assert.equal(page.questions().length, 1);
-    const notes = page.notes(subject);
-    assert.equal([...notes.walk()].filter(node => node.className === 'reading-evidence').length, evidenceCount);
+    const rendered = [...page.notes(subject).walk()];
+    assert.equal(rendered.filter(node => node.className === 'reading-evidence').length, evidenceCount);
+    for (const unit of subjects[subject].notes.units) {
+      const [heading, entries] = unit.sections.at(-1);
+      assert(entries.length >= 4);
+      assert(rendered.some(node => node.tag === 'h4' && node.textContent === heading));
+      assert(entries.every(([, explanation]) => rendered.some(node => node.tag === 'dd' && node.textContent === explanation)));
+    }
     runInContext("location.hash = '#practice'; window.events.hashchange()", page.context);
   }
   assert.equal(subjects.과학.practiceBank.filter(question => question.source?.includes('쪽수 기준')).length, 9);
