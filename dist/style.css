@@ -112,8 +112,7 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .study-order + .study-intro,
 .study-notes :is(.note-start > p, .note-row dd, .recall details > p),
 .note-reading > p:not(.note-reading-source),
-.card .passage,
-.exam-paper-passage {
+.card .passage {
   font-family: var(--reading-font);
 }
 .study-notes .note-row dd,
@@ -153,7 +152,7 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .actions button, .actions a { border-radius: 10px; padding: 10px 14px; font-weight: 700; }
 fieldset { border: 0; margin: 13px 0; padding: 0; min-width: 0; }
 fieldset legend { position: absolute; clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; }
-fieldset label { display: flex; align-items: baseline; gap: 8px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; margin: 6px 0; cursor: pointer; }
+fieldset label { display: flex; align-items: baseline; gap: 8px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; margin: 6px 0; cursor: pointer; font-family: var(--reading-font); }
 fieldset label:has(:checked) { border-color: var(--accent); background: var(--tint); }
 input[type=radio] { accent-color: var(--accent); }
 .feedback { background: var(--tint); padding: 12px 14px; border-radius: 10px; margin-top: 12px !important; }
@@ -199,7 +198,7 @@ input[type=radio] { accent-color: var(--accent); }
   background: white;
   color: #111;
   overflow-wrap: anywhere;
-  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  font-family: var(--reading-font);
   font-size: 15px;
   line-height: 1.55;
 }

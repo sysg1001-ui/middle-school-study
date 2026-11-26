@@ -450,8 +450,13 @@ window.addEventListener('storage', (event) => {
     showStorageWarning();
   }
 });
-document.querySelector('#exam-print-confirm').addEventListener('click', () => window.print());
-document.querySelector('#exam-print-preview').addEventListener('close', () => {
+const printDialog = document.querySelector('#exam-print-preview');
+document.querySelector('#exam-print-confirm').addEventListener('click', async () => {
+  const paper = document.querySelector('#exam-preview-paper').firstElementChild;
+  await document.fonts?.ready;
+  if (printDialog.open && paper === document.querySelector('#exam-preview-paper').firstElementChild) window.print();
+});
+printDialog.addEventListener('close', () => {
   document.querySelector('#exam-print-output').replaceChildren();
 });
 document.querySelector('#exam-note').textContent = exam.note;

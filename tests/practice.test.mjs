@@ -20,6 +20,7 @@ class Element {
   prepend(...nodes) { this.children.unshift(...nodes); }
   replaceChildren(...nodes) { this.children = nodes; }
   add(node) { this.append(node); }
+  get firstElementChild() { return this.children[0] ?? null; }
   setAttribute() {}
   removeAttribute() {}
   addEventListener(name, listener) { this.events[name] = listener; }
@@ -264,6 +265,27 @@ test('the 40-question bank and full rotation preserve earlier IDs and avoid cons
     assert.equal(seen.size, 40);
     assert(page.signatures().every(prompt => !previous.includes(prompt)));
   }
+});
+
+test('printing waits for the font and skips a replaced preview', async () => {
+  const page = openPage(new Map(), new Map());
+  const { document, window } = page.context;
+  let printCount = 0;
+  window.print = () => { printCount++; };
+  const confirm = document.querySelector('#exam-print-confirm');
+  let finishLoading;
+  document.fonts = { ready: new Promise(resolve => { finishLoading = resolve; }) };
+
+  page.print();
+  const pendingPrint = confirm.events.click();
+  assert.equal(printCount, 0);
+  page.print();
+  finishLoading();
+  await pendingPrint;
+  assert.equal(printCount, 0);
+
+  await confirm.events.click();
+  assert.equal(printCount, 1);
 });
 
 test('print uses the full current set and every subject includes notes with underlined evidence', () => {
