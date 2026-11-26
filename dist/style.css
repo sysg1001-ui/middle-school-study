@@ -93,6 +93,10 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .card p { line-height: 1.7; margin: 0; }
 .card .tag { font-size: 13px; font-weight: 800; color: var(--accent); }
 .card .detail { color: var(--muted); }
+.exam-schedule { margin-bottom: 14px; }
+.exam-schedule-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.exam-schedule-table :is(th, td) { padding: 8px; text-align: left; border-bottom: 1px solid var(--line); }
+.exam-schedule-table tbody tr:last-child > * { border-bottom: 0; }
 .study-intro { margin: 0 0 13px; color: var(--muted); line-height: 1.6; }
 .study-order { margin: 0 0 10px; color: var(--accent); font-weight: 800; line-height: 1.55; }
 .study-notes > .card { padding: clamp(17px, 4vw, 30px); }

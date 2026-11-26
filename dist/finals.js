@@ -421,11 +421,16 @@ const finalHanmunBank = finalPracticeBank('hanmun-final', [
 const finalExam = {
   id: 'grade1-semester2-final',
   title: '1학년 2학기 기말고사',
-  note: '현재 확인한 시험 범위 · 사회 7~10단원, 한문 11~16단원',
+  note: '2026년 12월 14일(월)~16일(수) · 1학년 2학기 2차 정기시험',
+  schedule: [
+    ['12월 14일(월)', '사회', '수학'],
+    ['12월 15일(화)', '한문', '영어'],
+    ['12월 16일(수)', '국어', '과학']
+  ],
   questionLabel: '기말고사 범위 기반 예상문제',
   subjects: {
     사회: {
-      summaries: finalSocialUnits.map(unit => [unit.title, unit.pages]),
+      summaries: [['7. 인간과 사회생활 ~ 10. 정치과정과 시민 참여', '교과서 122~184쪽']],
       notes: {
         intro: '천재교과서 사회 ①(허수미) 7~10단원 목차를 기준으로 정리했어요. 사례에 밑줄 친 단서와 개념을 짝지어 보세요.',
         units: finalSocialUnits,
@@ -434,8 +439,12 @@ const finalExam = {
       questions: finalSocialBank,
       practiceBank: finalSocialBank
     },
+    수학: {
+      summaries: [['Ⅵ. 평면도형의 성질 4. 원과 부채꼴 ~ Ⅷ. 자료의 정리와 해석 5. 통계적 문제해결', '교과서 196~275쪽']],
+      questions: []
+    },
     한문: {
-      summaries: finalHanmunUnits.map(unit => [unit.title, unit.pages]),
+      summaries: [['11. 간지, 시간을 헤아리는 법 ~ 16. 나를 깨우치는 글', '교과서 82~121쪽']],
       notes: {
         intro: '박영사 한문(최상근) 11~16과를 정리했어요. 음과 뜻을 구분하고, 밑줄에 나온 한자가 문장 안에서 무엇을 뜻하는지 확인해 보세요.',
         units: finalHanmunUnits,
@@ -443,6 +452,25 @@ const finalExam = {
       },
       questions: finalHanmunBank,
       practiceBank: finalHanmunBank
+    },
+    영어: {
+      summaries: [
+        ['Lesson 7 Find Your Dream', '교과서 108~123쪽, 7과 학습지'],
+        ['Lesson 8 Be Smart Online', '교과서 124~141쪽, 8과 학습지']
+      ],
+      questions: []
+    },
+    국어: {
+      summaries: [
+        ['3. 단어야 놀자 (1) 단어의 갈래 ~ (2) 단어의 짜임', '교과서 106~141쪽'],
+        ['4. 더불어 살아가는 힘 (1) 문제 해결을 위한 토의', '교과서 152~167쪽'],
+        ['학습지', '해당 범위의 모든 학습지']
+      ],
+      questions: []
+    },
+    과학: {
+      summaries: [['Ⅵ. 기체의 성질 ~ Ⅶ. 태양계의 구성', '교과서 194~252쪽']],
+      questions: []
     }
   }
 };

@@ -128,7 +128,34 @@ function card(heading) {
   return section;
 }
 
+function showExamSchedule(schedule) {
+  const section = card('시험 시간표');
+  section.className = 'card exam-schedule';
+  const table = element('table', '', 'exam-schedule-table');
+  table.setAttribute('aria-label', '시험 날짜와 교시별 과목');
+  const head = element('thead');
+  const headings = element('tr');
+  for (const label of ['날짜', '2교시 10:10~10:55', '3교시 11:10~11:55']) {
+    const cell = element('th', label);
+    cell.scope = 'col';
+    headings.append(cell);
+  }
+  head.append(headings);
+  const body = element('tbody');
+  for (const [date, second, third] of schedule) {
+    const row = element('tr');
+    const day = element('th', date);
+    day.scope = 'row';
+    row.append(day, element('td', second), element('td', third));
+    body.append(row);
+  }
+  table.append(head, body);
+  section.append(table);
+  content.append(section);
+}
+
 function showScope(data) {
+  if (exam.schedule) showExamSchedule(exam.schedule);
   const grid = element('div', '', 'grid');
   for (const [heading, text] of data.summaries) {
     const section = card(heading);

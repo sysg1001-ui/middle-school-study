@@ -119,6 +119,12 @@ function openPage(session, local, options = {}) {
       window.events.hashchange();
       return content;
     },
+    scope(subject) {
+      this.chooseSubject(subject);
+      location.hash = '#summary';
+      window.events.hashchange();
+      return [...content.walk()];
+    },
     review() {
       location.hash = '#review';
       window.events.hashchange();
@@ -154,10 +160,37 @@ test('Hanmun question and choice readings appear only after grading', () => {
   assert.deepEqual(page.hanmunReadings(), []);
 });
 
-test('the final exam has two subjects with full banks, annotated notes, and printable sets', () => {
+test('the final exam scope displays all first-grade subjects and the timetable', () => {
   const page = openPage(new Map(), new Map());
   const subjects = runInContext('finalExam.subjects', page.context);
-  assert.deepEqual(Object.keys(subjects), ['사회', '한문']);
+  assert.deepEqual(Object.keys(subjects), ['사회', '수학', '한문', '영어', '국어', '과학']);
+
+  for (const [subject, pages] of Object.entries({
+    사회: ['122~184'], 수학: ['196~275'], 한문: ['82~121'],
+    영어: ['108~123', '124~141'], 국어: ['106~141', '152~167'], 과학: ['194~252']
+  })) {
+    const details = page.scope(subject).filter(node => node.className === 'detail');
+    assert.deepEqual(details.slice(0, pages.length).map(node => node.textContent.match(/\d+~\d+/)?.[0]), pages);
+    if (subject === '영어') assert(details.every((node, index) => node.textContent.includes(`${7 + index}과 학습지`)));
+    if (subject === '국어') assert.equal(details.at(-1).textContent, '해당 범위의 모든 학습지');
+  }
+
+  const table = page.scope('사회').find(node => node.tag === 'table');
+  const rows = [...table.walk()].filter(node => node.tag === 'tr')
+    .map(row => row.children.map(cell => cell.textContent));
+  assert.deepEqual(rows, [
+    ['날짜', '2교시 10:10~10:55', '3교시 11:10~11:55'],
+    ['12월 14일(월)', '사회', '수학'],
+    ['12월 15일(화)', '한문', '영어'],
+    ['12월 16일(수)', '국어', '과학']
+  ]);
+  page.chooseExam('grade1-semester2-midterm');
+  assert(!page.scope('수학').some(node => node.tag === 'table'));
+});
+
+test('the final exam keeps full banks, annotated notes, and printable sets for social studies and Hanmun', () => {
+  const page = openPage(new Map(), new Map());
+  const subjects = runInContext('finalExam.subjects', page.context);
   assert.equal(runInContext('exam.id', page.context), 'grade1-semester2-final');
   for (const [subject, units] of Object.entries({ 사회: 4, 한문: 6 })) {
     page.chooseSubject(subject);
