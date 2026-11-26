@@ -80,7 +80,7 @@ function advancePractice(data, key) {
   }
   const bankSize = data.practiceBank.length;
   const offset = Number.parseInt(previous, 10);
-  // The 36- and 40-question banks allow disjoint consecutive 16-question windows.
+  // Each bank has enough questions for consecutive 16-question sets to stay disjoint.
   const next = Number.isInteger(offset) && offset >= 0
     ? (offset + practiceSize + 1) % bankSize
     : Math.floor(Math.random() * bankSize);

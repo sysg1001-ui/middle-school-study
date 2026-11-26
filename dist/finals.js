@@ -418,6 +418,16 @@ const finalHanmunBank = finalPracticeBank('hanmun-final', [
   return { ...question, readings };
 });
 
+const finalMathBank = finalPracticeBank('math-final', finalMathQuestions);
+const finalEnglishBank = finalPracticeBank('english-final', finalEnglishQuestions);
+const finalKoreanBank = finalPracticeBank('korean-final', finalKoreanQuestions);
+const finalScienceGroups = [...finalScienceQuestions, ...finalEarthMoonQuestions];
+const finalScienceBank = finalPracticeBank('science-final', finalScienceGroups).map((question, index) =>
+  index % finalScienceGroups.length < finalScienceQuestions.length
+    ? question
+    : { ...question, source: '쪽수 기준 추가 확인 · 지구와 달' }
+);
+
 const finalExam = {
   id: 'grade1-semester2-final',
   title: '1학년 2학기 기말고사',
@@ -432,7 +442,7 @@ const finalExam = {
     사회: {
       summaries: [['7. 인간과 사회생활 ~ 10. 정치과정과 시민 참여', '교과서 122~184쪽']],
       notes: {
-        intro: '천재교과서 사회 ①(허수미) 7~10단원 목차를 기준으로 정리했어요. 사례에 밑줄 친 단서와 개념을 짝지어 보세요.',
+        intro: '사회 ①(허수미) 122~184쪽이에요. 지위·역할·역할 갈등, 문화 이해 태도, 민주주의 기본 원리, 선거 원칙과 정치과정은 사례에서 골라내는 연습을 해 보세요.',
         units: finalSocialUnits,
         sources: [['천재교과서 사회 ①(허수미) 단원 목차', finalSocialSource]]
       },
@@ -441,12 +451,14 @@ const finalExam = {
     },
     수학: {
       summaries: [['Ⅵ. 평면도형의 성질 4. 원과 부채꼴 ~ Ⅷ. 자료의 정리와 해석 5. 통계적 문제해결', '교과서 196~275쪽']],
-      questions: []
+      notes: finalAdditionalNotes.수학,
+      questions: finalMathBank,
+      practiceBank: finalMathBank
     },
     한문: {
       summaries: [['11. 간지, 시간을 헤아리는 법 ~ 16. 나를 깨우치는 글', '교과서 82~121쪽']],
       notes: {
-        intro: '박영사 한문(최상근) 11~16과를 정리했어요. 음과 뜻을 구분하고, 밑줄에 나온 한자가 문장 안에서 무엇을 뜻하는지 확인해 보세요.',
+        intro: '한문(최상근) 82~121쪽이에요. 간지의 순서, 절기·명절의 한자어, 속담·격언의 풀이와 상황 적용을 먼저 점검하세요. 같은 한자가 문장 안에서 어떤 뜻으로 쓰였는지도 확인해 보세요.',
         units: finalHanmunUnits,
         sources: [['박영사 한문(최상근) 교과서 미리보기', finalHanmunSource]]
       },
@@ -458,7 +470,9 @@ const finalExam = {
         ['Lesson 7 Find Your Dream', '교과서 108~123쪽, 7과 학습지'],
         ['Lesson 8 Be Smart Online', '교과서 124~141쪽, 8과 학습지']
       ],
-      questions: []
+      notes: finalAdditionalNotes.영어,
+      questions: finalEnglishBank,
+      practiceBank: finalEnglishBank
     },
     국어: {
       summaries: [
@@ -466,11 +480,16 @@ const finalExam = {
         ['4. 더불어 살아가는 힘 (1) 문제 해결을 위한 토의', '교과서 152~167쪽'],
         ['학습지', '해당 범위의 모든 학습지']
       ],
-      questions: []
+      notes: finalAdditionalNotes.국어,
+      questions: finalKoreanBank,
+      practiceBank: finalKoreanBank
     },
     과학: {
       summaries: [['Ⅵ. 기체의 성질 ~ Ⅶ. 태양계의 구성', '교과서 194~252쪽']],
-      questions: []
+      notes: finalAdditionalNotes.과학,
+      practiceIntro: '안내문에 적힌 교과서 쪽수에는 ‘지구와 달’도 들어 있어요. 해당 문제에는 ‘쪽수 기준 추가 확인’을 표시했어요.',
+      questions: finalScienceBank,
+      practiceBank: finalScienceBank
     }
   }
 };

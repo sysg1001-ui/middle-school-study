@@ -4,7 +4,7 @@ import { createContext, runInContext } from 'node:vm';
 import test from 'node:test';
 
 const scripts = await Promise.all(
-  ['midterm', 'study-notes', 'practice-sets', 'finals', 'materials', 'app'].map((name) =>
+  ['midterm', 'study-notes', 'practice-sets', 'final-study', 'finals', 'materials', 'app'].map((name) =>
     readFile(new URL(`../dist/${name}.js`, import.meta.url), 'utf8')
   )
 );
@@ -187,15 +187,17 @@ test('the final exam scope displays all first-grade subjects and the timetable',
   assert(!page.scope('수학').some(node => node.tag === 'table'));
 });
 
-test('the final exam keeps full banks, annotated notes, and printable sets for social studies and Hanmun', () => {
+test('all final exam subjects provide annotated notes, disjoint practice sets, printing, and review', () => {
   const page = openPage(new Map(), new Map());
   const subjects = runInContext('finalExam.subjects', page.context);
   assert.equal(runInContext('exam.id', page.context), 'grade1-semester2-final');
-  for (const [subject, units] of Object.entries({ 사회: 4, 한문: 6 })) {
+  const noteCounts = { 사회: 8, 수학: 5, 한문: 12, 영어: 4, 국어: 3, 과학: 5 };
+  for (const [subject, evidenceCount] of Object.entries(noteCounts)) {
     page.chooseSubject(subject);
     const bank = subjects[subject].practiceBank;
-    assert.equal(bank.length, 36);
-    assert.equal(new Set(bank.map(question => question.id)).size, 36);
+    assert.equal(bank.length, subject === '과학' ? 45 : 36);
+    assert.equal(new Set(bank.map(question => question.id)).size, bank.length);
+    assert.equal(new Set(bank.map(question => question.prompt)).size, bank.length);
     for (const question of bank) {
       assert.equal(new Set(question.choices).size, 4);
       assert(question.choices[question.answer] && question.explanation);
@@ -206,13 +208,16 @@ test('the final exam keeps full banks, annotated notes, and printable sets for s
     assert(page.signatures().every(question => !current.includes(question)));
     const paper = page.print();
     assert.equal([...paper.walk()].filter(node => node.className === 'exam-paper-prompt').length, 16);
+    const wrongAnswer = runInContext('(practiceQuestions(exam.subjects[subject])[0].answer + 1) % 4', page.context);
+    page.selectAnswer(wrongAnswer);
+    page.grade();
+    page.review();
+    assert.equal(page.questions().length, 1);
     const notes = page.notes(subject);
-    assert.equal([...notes.walk()].filter(node => node.className === 'reading-evidence').length, units * 2);
-    page.chooseExam('grade1-semester2-midterm');
-    page.window.events.hashchange();
-    page.chooseExam('grade1-semester2-final');
+    assert.equal([...notes.walk()].filter(node => node.className === 'reading-evidence').length, evidenceCount);
     runInContext("location.hash = '#practice'; window.events.hashchange()", page.context);
   }
+  assert.equal(subjects.과학.practiceBank.filter(question => question.source?.includes('쪽수 기준')).length, 9);
 });
 
 test('the 40-question bank and full rotation preserve earlier IDs and avoid consecutive repeats', () => {

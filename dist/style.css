@@ -127,7 +127,7 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .recall details p { margin-top: 6px; }
 .note-sources { display: flex; flex-wrap: wrap; gap: 8px 13px; color: var(--muted); font-size: 13px; }
 .note-sources a { color: var(--accent); text-decoration: underline; }
-.card .passage { background: var(--tint); border-inline-start: 3px solid #e99dc2; padding: 10px 13px; }
+.card .passage { background: var(--tint); border-inline-start: 3px solid #e99dc2; padding: 10px 13px; white-space: pre-wrap; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .actions button, .actions a { border-radius: 10px; padding: 10px 14px; font-weight: 700; }
 fieldset { border: 0; margin: 13px 0; padding: 0; min-width: 0; }
