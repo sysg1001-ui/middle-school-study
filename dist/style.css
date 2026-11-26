@@ -12,9 +12,17 @@
   font-weight: 100 900;
   font-display: swap;
 }
+@font-face {
+  font-family: 'Noto Serif KR';
+  src: url('./NotoSerifKR-Study.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
 :root {
   color-scheme: light;
   font-family: 'Pretendard Variable', 'Malgun Gothic', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --reading-font: 'Noto Serif KR', 'AppleMyungjo', Batang, serif;
   color: #422438;
   background: #fff5f9;
   --accent: #a62c65;
@@ -101,6 +109,15 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .exam-schedule-table tbody tr:last-child > * { border-bottom: 0; }
 .study-intro { margin: 0 0 13px; color: var(--muted); line-height: 1.6; }
 .study-order { margin: 0 0 10px; color: var(--accent); font-weight: 800; line-height: 1.55; }
+.study-order + .study-intro,
+.study-notes :is(.note-start > p, .note-row dd, .recall details > p),
+.note-reading > p:not(.note-reading-source),
+.card .passage,
+.exam-paper-passage {
+  font-family: var(--reading-font);
+}
+.study-notes .note-row dd,
+.note-reading > p:not(.note-reading-source) { line-height: 1.75; }
 .study-notes > .card { padding: clamp(17px, 4vw, 30px); }
 .study-notes > .card > h3 { font-size: clamp(19px, 4vw, 24px); }
 .note-start { padding: 12px 14px; border-inline-start: 3px solid var(--accent); background: var(--tint); border-radius: 8px; }

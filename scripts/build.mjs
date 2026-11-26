@@ -9,7 +9,8 @@ const output = new URL('build/', root);
 const assets = [
   'style.css', 'midterm.js', 'study-notes.js', 'practice-sets.js', 'final-study.js', 'finals.js', 'materials.js',
   'app.js', 'update.js', 'study-icon-32.png', 'study-icon-180.png', 'study-icon-192.png', 'study-icon-512.png',
-  'Jua-StudyTitle.woff2', 'PretendardVariable.woff2', 'Jua-OFL.txt', 'Pretendard-OFL.txt'
+  'Jua-StudyTitle.woff2', 'PretendardVariable.woff2', 'NotoSerifKR-Study.woff2',
+  'Jua-OFL.txt', 'Pretendard-OFL.txt', 'NotoSerifKR-OFL.txt'
 ];
 const inputFiles = ['index.html', 'sw.js', '_headers', ...assets];
 const inputs = new Map(await Promise.all(inputFiles.map(async name => [name, await readFile(new URL(name, source))])));
