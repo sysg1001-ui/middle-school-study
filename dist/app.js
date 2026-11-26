@@ -135,18 +135,20 @@ function showExamSchedule(schedule) {
   table.setAttribute('aria-label', '시험 날짜와 교시별 과목');
   const head = element('thead');
   const headings = element('tr');
-  for (const label of ['날짜', '2교시 10:10~10:55', '3교시 11:10~11:55']) {
+  for (const label of ['교시', ...schedule.map(([date]) => date)]) {
     const cell = element('th', label);
     cell.scope = 'col';
     headings.append(cell);
   }
   head.append(headings);
   const body = element('tbody');
-  for (const [date, second, third] of schedule) {
+  const periods = [['2교시', '10:10~10:55'], ['3교시', '11:10~11:55']];
+  for (const [index, [period, time]] of periods.entries()) {
     const row = element('tr');
-    const day = element('th', date);
-    day.scope = 'row';
-    row.append(day, element('td', second), element('td', third));
+    const heading = element('th', period);
+    heading.scope = 'row';
+    heading.append(element('span', time, 'exam-schedule-time'));
+    row.append(heading, ...schedule.map(day => element('td', day[index + 1])));
     body.append(row);
   }
   table.append(head, body);

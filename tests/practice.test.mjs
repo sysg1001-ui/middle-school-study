@@ -177,12 +177,11 @@ test('the final exam scope displays all first-grade subjects and the timetable',
 
   const table = page.scope('사회').find(node => node.tag === 'table');
   const rows = [...table.walk()].filter(node => node.tag === 'tr')
-    .map(row => row.children.map(cell => cell.textContent));
+    .map(row => row.children.map(cell => [cell.textContent, ...cell.children.map(child => child.textContent)].join(' ')));
   assert.deepEqual(rows, [
-    ['날짜', '2교시 10:10~10:55', '3교시 11:10~11:55'],
-    ['12월 14일(월)', '사회', '수학'],
-    ['12월 15일(화)', '한문', '영어'],
-    ['12월 16일(수)', '국어', '과학']
+    ['교시', '12월 14일(월)', '12월 15일(화)', '12월 16일(수)'],
+    ['2교시 10:10~10:55', '사회', '한문', '국어'],
+    ['3교시 11:10~11:55', '수학', '영어', '과학']
   ]);
   page.chooseExam('grade1-semester2-midterm');
   assert(!page.scope('수학').some(node => node.tag === 'table'));

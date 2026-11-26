@@ -95,7 +95,9 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .card .detail { color: var(--muted); }
 .exam-schedule { margin-bottom: 14px; }
 .exam-schedule-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.exam-schedule-table :is(th, td) { padding: 8px; text-align: left; border-bottom: 1px solid var(--line); }
+.exam-schedule-table :is(th, td) { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--line); }
+.exam-schedule-table tr > :first-child { text-align: left; }
+.exam-schedule-time { display: block; font-size: 12px; font-weight: 400; color: var(--muted); white-space: nowrap; }
 .exam-schedule-table tbody tr:last-child > * { border-bottom: 0; }
 .study-intro { margin: 0 0 13px; color: var(--muted); line-height: 1.6; }
 .study-order { margin: 0 0 10px; color: var(--accent); font-weight: 800; line-height: 1.55; }
