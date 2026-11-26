@@ -177,9 +177,9 @@ function addStudyLink(label, href) {
   content.append(actions);
 }
 
-function showNoteReadings(chapter, readings) {
+function showNoteReadings(chapter, readings, heading) {
   const section = element('section', '', 'note-readings');
-  section.append(element('h4', '지문 읽기 · 밑줄에서 근거 찾기'));
+  section.append(element('h4', heading));
   for (const reading of readings) {
     const article = element('article', '', 'note-reading');
     article.append(element('p', reading.source, 'note-reading-source'), element('h5', reading.title));
@@ -196,9 +196,22 @@ function showNoteReadings(chapter, readings) {
   chapter.append(section);
 }
 
+function showNoteSection(chapter, heading, entries) {
+  const section = element('section', '', 'note-section');
+  const list = element('dl', '', 'note-list');
+  for (const [term, explanation] of entries) {
+    const row = element('div', '', 'note-row');
+    row.append(element('dt', term), element('dd', explanation));
+    list.append(row);
+  }
+  section.append(element('h4', heading), list);
+  chapter.append(section);
+}
+
 function showNotes(data) {
   const { intro, units, sources } = data.notes;
-  const order = units.some(unit => unit.readings) ? '지문에서 근거 찾기 → 요약정리 → 문제 풀기'
+  const order = units.some(unit => unit.start) ? '쉬운 설명 → 핵심 개념 → 예시 → 스스로 확인'
+    : units.some(unit => unit.readings) ? '지문에서 근거 찾기 → 요약정리 → 문제 풀기'
     : '먼저 외우기 → 안 보고 답해 보기 → 문제 풀기';
   content.append(element('p', order, 'study-order'));
   if (intro) content.append(element('p', intro, 'study-intro'));
@@ -206,18 +219,17 @@ function showNotes(data) {
   for (const unit of units) {
     const chapter = card(unit.title);
     chapter.prepend(element('p', unit.pages, 'tag'));
-    if (unit.readings?.length) showNoteReadings(chapter, unit.readings);
-    for (const [heading, entries] of unit.sections) {
-      const section = element('section', '', 'note-section');
-      const list = element('dl', '', 'note-list');
-      for (const [term, explanation] of entries) {
-        const row = element('div', '', 'note-row');
-        row.append(element('dt', term), element('dd', explanation));
-        list.append(row);
-      }
-      section.append(element('h4', heading), list);
-      chapter.append(section);
+    const sections = [...unit.sections];
+    if (unit.start) {
+      const start = element('div', '', 'note-start');
+      start.append(element('h4', '쉽게 이해하기'), element('p', unit.start));
+      chapter.append(start);
+      showNoteSection(chapter, ...sections.shift());
     }
+    if (unit.readings?.length) {
+      showNoteReadings(chapter, unit.readings, unit.start ? '예시로 이해하기' : '지문 읽기 · 밑줄에서 근거 찾기');
+    }
+    for (const [heading, entries] of sections) showNoteSection(chapter, heading, entries);
     const recall = element('div', '', 'recall');
     recall.append(element('h4', '안 보고 답해 보기'));
     for (const [prompt, answer] of unit.recall) {

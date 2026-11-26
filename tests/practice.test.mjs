@@ -215,6 +215,14 @@ test('all final exam subjects provide annotated notes, disjoint practice sets, p
     assert.equal(page.questions().length, 1);
     const rendered = [...page.notes(subject).walk()];
     assert.equal(rendered.filter(node => node.className === 'reading-evidence').length, evidenceCount);
+    const chapters = rendered.filter(node => node.tag === 'article' && node.className === 'card');
+    assert.equal(chapters.length, subjects[subject].notes.units.length);
+    assert.equal(rendered.filter(node => node.className === 'reading-translation').length, subject === '영어' ? 4 : 0);
+    for (const chapter of chapters) {
+      const firstSections = chapter.children.slice(2, 5).map(node => node.className);
+      assert.deepEqual(firstSections, ['note-start', 'note-section', 'note-readings']);
+      assert(chapter.children[2].children[1].textContent);
+    }
     for (const unit of subjects[subject].notes.units) {
       const [heading, entries] = unit.sections.at(-1);
       assert(entries.length >= 4);

@@ -103,9 +103,13 @@ h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 15px; }
 .study-order { margin: 0 0 10px; color: var(--accent); font-weight: 800; line-height: 1.55; }
 .study-notes > .card { padding: clamp(17px, 4vw, 30px); }
 .study-notes > .card > h3 { font-size: clamp(19px, 4vw, 24px); }
+.note-start { padding: 12px 14px; border-inline-start: 3px solid var(--accent); background: var(--tint); border-radius: 8px; }
+.note-start h4 { margin: 0 0 4px; color: var(--accent); }
+.note-start p { max-width: 70ch; word-break: keep-all; overflow-wrap: anywhere; }
 .note-section { margin-top: 19px; }
 .note-section h4 { margin: 0 0 7px; color: var(--accent); }
 .note-section:first-of-type, .note-readings + .note-section { background: var(--tint); padding: 12px 14px 4px; border-radius: 12px; }
+.note-start ~ .note-section { background: transparent; padding: 0; }
 .note-readings { margin-top: 19px; }
 .note-readings h4 { color: var(--accent); }
 .note-reading { margin-top: 10px; padding: 13px 15px; background: #fff9fc; border: 1px solid var(--line); border-radius: 10px; }
